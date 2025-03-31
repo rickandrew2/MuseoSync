@@ -10,8 +10,7 @@ import { Gallery4 } from "@/components/ui/gallery4";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import LogBook from "./pages/LogBook"; // Import your LogBook component
-
+import LogBook from "./pages/LogBook";
 
 const App = () => {
   return (
@@ -22,7 +21,7 @@ const App = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/logbook" element={<LogBook />} /> {/* Add the LogBook route here */}
+        <Route path="/logbook" element={<LogBook />} /> 
       </Routes>
       <Footer7 />
     </>
