@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"; // Correct imports
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 import { useForm } from "react-hook-form";
 import ReCAPTCHA from "react-google-recaptcha";
 
-const LogBook = () => {
+const VisitorLog = () => {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [address, setAddress] = useState("");
@@ -27,7 +27,7 @@ const LogBook = () => {
     const formData = { name, gender, address };
 
     try {
-      const response = await fetch("http://localhost:5000/submit-logbook", {
+      const response = await fetch("http://localhost:5000/submit-visitorlog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -71,23 +71,17 @@ const LogBook = () => {
           </div>
 
           <div>
-  <Label htmlFor="gender" className="block text-gray-700 text-sm font-medium mb-1">Gender</Label>
-  <Select
-    value={gender}
-    onValueChange={setGender}
-    className="w-full" // Ensure full width
-    required
-  >
-    <SelectTrigger className="w-full"> {/* Make the trigger take up full width */}
-      <SelectValue placeholder="Select Gender" />
-    </SelectTrigger>
-    <SelectContent className="w-full"> {/* Make the content take up full width */}
-      <SelectItem value="Male">Male</SelectItem>
-      <SelectItem value="Female">Female</SelectItem>
-    </SelectContent>
-  </Select>
-</div>
-
+            <Label htmlFor="gender" className="block text-gray-700 text-sm font-medium mb-1">Gender</Label>
+            <Select value={gender} onValueChange={setGender} className="w-full" required>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Gender" />
+              </SelectTrigger>
+              <SelectContent className="w-full">
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           <div>
             <Label htmlFor="address" className="block text-gray-700 text-sm font-medium mb-1">Address</Label>
@@ -102,21 +96,14 @@ const LogBook = () => {
             />
           </div>
 
-          {/* Google reCAPTCHA */}
           <div className="mt-4">
             <ReCAPTCHA
-              sitekey="6LeFK-oqAAAAAJToYZksywyjtT5a6Iw7ccix4BF_" // Replace with your actual site key
+              sitekey="6LeFK-oqAAAAAJToYZksywyjtT5a6Iw7ccix4BF_"
               onChange={handleRecaptchaChange}
             />
           </div>
 
-          {/* Custom Button */}
-          <Button
-            type="submit"
-            variant="default"
-            size="lg"
-            className="w-full mt-6"
-          >
+          <Button type="submit" variant="default" size="lg" className="w-full mt-6">
             Submit
           </Button>
         </form>
@@ -125,4 +112,4 @@ const LogBook = () => {
   );
 };
 
-export default LogBook;
+export default VisitorLog;
