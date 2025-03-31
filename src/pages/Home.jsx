@@ -1,6 +1,6 @@
 import React from "react";
 import { Hero } from "@/components/ui/hero";
-import { Features06Page } from "@/components/ui/features";
+import { Features06Page } from "@/components/ui/Features";
 import { Gallery4 } from "@/components/ui/gallery4";
 
 const Home = () => {
