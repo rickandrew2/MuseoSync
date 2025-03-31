@@ -1,0 +1,55 @@
+[
+    {
+      "id": 1,
+      "artifact_name": "Ancient Greek Vase",
+      "acquisition_date": "2023-01-15",
+      "location": "Main Exhibit Hall",
+      "loan_status": "On Display",
+      "image": "https://example.com/images/greek_vase.jpg",
+      "condition_report": {
+        "last_checked": "2024-03-30",
+        "status": "Good",
+        "notes": "No visible damage"
+      }
+    },
+    {
+      "id": 2,
+      "artifact_name": "Medieval Sword",
+      "acquisition_date": "2021-07-10",
+      "location": "Weaponry Exhibit",
+      "loan_status": "In Storage",
+      "image": "https://example.com/images/medieval_sword.jpg",
+      "condition_report": {
+        "last_checked": "2024-02-20",
+        "status": "Restoration Needed",
+        "notes": "Rust forming on the blade"
+      }
+    },
+    {
+      "id": 3,
+      "artifact_name": "Pharaoh’s Gold Mask",
+      "acquisition_date": "2018-05-20",
+      "location": "Ancient Egypt Section",
+      "loan_status": "On Loan",
+      "image": "https://example.com/images/pharaoh_mask.jpg",
+      "condition_report": {
+        "last_checked": "2024-01-05",
+        "status": "Excellent",
+        "notes": "Stored in climate-controlled case"
+      }
+    },
+    {
+      "id": 4,
+      "artifact_name": "World War II Helmet",
+      "acquisition_date": "2022-03-08",
+      "location": "Military History Wing",
+      "loan_status": "On Display",
+      "image": "https://example.com/images/ww2_helmet.jpg",
+      "condition_report": {
+        "last_checked": "2024-03-15",
+        "status": "Good",
+        "notes": "Minor wear on leather straps"
+      }
+    }
+  ]
+  
