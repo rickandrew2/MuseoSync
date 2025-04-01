@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -6,51 +6,30 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const features = [
-  {
-    category: "Lorem Ipsum",
-    title: "Collect and enrich leads your way",
-    details:
-      "Take control over how and when to follow up with your leads. Store and reference leads in multiple tables and, from there, automatically send them personalized emails.",
-    tutorialLink: "#",
-  },
-  {
-    category: "Lorem Ipsum",
-    title: "Streamline your workflows effortlessly",
-    details:
-      "Organize tasks, deadlines, and team collaboration in one place. Use customizable boards to manage projects efficiently and automate routine updates.",
-    tutorialLink: "#",
-  },
-  {
-    category: "Lorem Ipsum",
-    title: "Deliver seamless customer experiences",
-    details:
-      "Track and resolve customer queries faster with an integrated ticketing system. Set priorities, automate follow-ups, and enhance satisfaction with personalized responses.",
-    tutorialLink: "#",
-  },
-  {
-    category: "Lorem Ipsum",
-    title: "Stay connected with your team",
-    details:
-      "Simplify communication and align team efforts with shared boards and real-time updates. Enable transparent goal tracking and instant feedback for better results.",
-    tutorialLink: "#",
-  },
-  {
-    category: "Lorem Ipsum",
-    title: "Accelerate innovation with ease",
-    details:
-      "Bring your product ideas to life by managing prototypes, feedback, and iterations in one place. Collaborate with your team to refine features and release with confidence.",
-    tutorialLink: "#",
-  },
-];
 
 const Features06Page = () => {
+  const [artifacts, setArtifacts] = useState([]);
+
+  // Fetch artifacts data from backend
   useEffect(() => {
     AOS.init({
-      duration: 1000, // Animation duration in milliseconds
-      easing: "ease-in-out", // Smooth animation
-      once: true, // Runs animation once per scroll
+      duration: 1000,
+      easing: "ease-in-out",
+      once: true,
     });
+
+    // Fetch data from API
+    const fetchArtifacts = async () => {
+      try {
+        const response = await fetch("/api/artifacts");
+        const data = await response.json();
+        setArtifacts(data);
+      } catch (error) {
+        console.error("Error fetching artifacts data:", error);
+      }
+    };
+
+    fetchArtifacts();
   }, []);
 
   return (
@@ -63,30 +42,31 @@ const Features06Page = () => {
           Explore Featured Collections
         </h2>
         <div className="mt-8 md:mt-16 w-full mx-auto space-y-20">
-          {features.map((feature, index) => (
+          {artifacts.map((artifact, index) => (
             <div
-              key={feature.category}
+              key={artifact._id}
               className="flex flex-col md:flex-row items-center gap-x-20 gap-y-6 md:odd:flex-row-reverse"
               data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
             >
               <div
                 className="w-full aspect-[6/4] bg-gray-200 rounded-xl border border-gray-300 basis-1/2"
+                style={{ backgroundImage: `url(${artifact.image})`, backgroundSize: "cover", backgroundPosition: "center" }}
                 data-aos="zoom-in"
               />
               <div className="basis-1/2 shrink-0" data-aos="fade-up">
                 <span className="uppercase font-semibold text-sm text-gray-500">
-                  {feature.category}
+                  {artifact.location}
                 </span>
                 <h4 className="my-3 text-3xl font-semibold tracking-tight">
-                  {feature.title}
+                  {artifact.artifact_name}
                 </h4>
-                <p className="text-gray-600 text-[17px]">{feature.details}</p>
+                <p className="text-gray-600 text-[17px]">{artifact.description}</p>
                 <Button
                   asChild
                   className="mt-6 rounded-full min-w-40 text-[15px]"
                   data-aos="fade-up"
                 >
-                  <Link to={feature.tutorialLink}>
+                  <Link to={`/artifact/${artifact._id}`}>
                     Learn More <ArrowRight />
                   </Link>
                 </Button>

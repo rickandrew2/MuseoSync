@@ -28,6 +28,7 @@
     "cmdk": "^1.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "embla-carousel-auto-scroll": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
     "express": "^4.21.2",
     "lucide-react": "^0.484.0",

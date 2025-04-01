@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Contact2 = () => {
   return (
@@ -53,7 +54,20 @@ const Contact2 = () => {
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="subject">Subject</Label>
-              <Input type="text" id="subject" placeholder="Subject" />
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="General Information">General Information</SelectItem>
+                  <SelectItem value="Group Bookings">Group Bookings</SelectItem>
+                  <SelectItem value="Special Exhibits">Special Exhibits</SelectItem>
+                  <SelectItem value="Artifact Information">Artifact Information</SelectItem>
+                  <SelectItem value="Donations & Sponsorships">Donations & Sponsorships</SelectItem>
+                  <SelectItem value="Feedback & Complaints">Feedback & Complaints</SelectItem>
+                  <SelectItem value="Others">Others</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid w-full gap-1.5">
               <Label htmlFor="message">Message</Label>
