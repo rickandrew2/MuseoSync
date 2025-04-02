@@ -2,50 +2,61 @@ import express from "express";
 import { MongoClient } from "mongodb";
 import cors from "cors";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
-dotenv.config({ path: "./config.env" }); // Specify the path to the .env file
+dotenv.config({ path: "./config.env" });
 
 const app = express();
 const port = 5000;
 
 // Middleware
-app.use(cors());
-app.use(express.json()); // for parsing application/json
+app.use(helmet()); // Security headers
+app.use(express.json()); // Parse JSON
+app.use(cors({
+  origin: "http://localhost:3000", // Adjust this if your frontend runs on a different port
+  methods: ["GET", "POST"],
+  credentials: true,
+}));
+
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests, please try again later.",
+});
+app.use(limiter);
 
 // MongoDB connection setup
 const Db = process.env.ATLAS_URI;
 if (!Db) {
   console.error("MongoDB URI is not defined in environment variables.");
-  process.exit(1); // Exit if the URI is not found
+  process.exit(1);
 }
 
-const client = new MongoClient(Db);
+const client = new MongoClient(Db, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: { version: "1", strict: true, deprecationErrors: true },
+});
 
-// Function to connect to MongoDB
 async function connectDB() {
   try {
     await client.connect();
     console.log("MongoDB connected successfully");
-
-    // Optionally, you can log the collections
-    const collections = await client.db("MuseoSync").collections();
-    collections.forEach((collection) => console.log(collection.collectionName)); 
   } catch (error) {
     console.error("MongoDB connection failed:", error);
-    throw error;
+    process.exit(1);
   }
 }
-
-// Connect to MongoDB when the server starts
 connectDB();
 
 // Route to get all artifacts
 app.get("/api/artifacts", async (req, res) => {
   try {
     const db = client.db("MuseoSync");
-    const collection = db.collection("artifacts_collection"); // Your artifacts collection
-    const artifacts = await collection.find().toArray(); // Get all artifacts from the collection
-
+    const collection = db.collection("artifacts_collection");
+    const artifacts = await collection.find().toArray();
     res.status(200).json(artifacts);
   } catch (error) {
     console.error("Error fetching artifacts:", error);
@@ -64,20 +75,24 @@ app.post("/submit-logbook", async (req, res) => {
   try {
     const db = client.db("MuseoSync");
     const collection = db.collection("Logbook");
-
-    // Insert the form data into the MongoDB collection
-    const result = await collection.insertOne({
-      name,
-      gender,
-      address,
+    const sanitizedData = {
+      name: name.trim(),
+      gender: gender.trim(),
+      address: address.trim(),
       timestamp: new Date(),
-    });
-
+    };
+    const result = await collection.insertOne(sanitizedData);
     res.status(200).json({ message: "Data submitted successfully!", result });
   } catch (error) {
     console.error("Error inserting data:", error);
     res.status(500).json({ error: "Failed to insert data" });
   }
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
 // Start the server

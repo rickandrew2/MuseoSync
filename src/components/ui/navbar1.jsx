@@ -22,6 +22,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
+import logoImage from "../../assets/pictures/logo3.png";
 
 const renderMenuItem = (item) => {
   if (item.items) {
@@ -30,9 +31,13 @@ const renderMenuItem = (item) => {
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent className="bg-popover text-popover-foreground">
           {item.items.map((subItem) => (
-           <NavigationMenuLink asChild key={subItem.title} className="w-64 whitespace-nowrap">
-             <SubMenuLink item={subItem} />
-         </NavigationMenuLink>
+            <NavigationMenuLink
+              asChild
+              key={subItem.title}
+              className="w-64 whitespace-nowrap"
+            >
+              <SubMenuLink item={subItem} />
+            </NavigationMenuLink>
           ))}
         </NavigationMenuContent>
       </NavigationMenuItem>
@@ -84,7 +89,9 @@ const SubMenuLink = ({ item }) => {
       <div className="text-gray-800 mt-1">{item.icon}</div>
 
       {/* Text Content */}
-      <div className="w-[180px] leading-snug"> {/* Improved spacing */}
+      <div className="w-[180px] leading-snug">
+        {" "}
+        {/* Improved spacing */}
         <div className="text-sm font-semibold text-gray-900">{item.title}</div>
         {item.description && (
           <p className="text-xs text-gray-600 break-words text-justify">
@@ -96,11 +103,10 @@ const SubMenuLink = ({ item }) => {
   );
 };
 
-
 const Navbar1 = ({
   logo = {
     url: "/home",
-    src: "https://shadcnblocks.com/images/block/logos/shadcnblockscom-icon.svg",
+    src: logoImage, // Use the imported image
     alt: "logo",
     title: "Museo De Malaquing Tubig",
   },
@@ -143,7 +149,7 @@ const Navbar1 = ({
     },
     {
       title: "VISIT",
-      url: "#",
+      url: "/visit",
     },
   ],
 }) => {
@@ -154,7 +160,7 @@ const Navbar1 = ({
         <nav className="hidden lg:flex items-center justify-between">
           {/* Logo */}
           <a href={logo.url} className="flex items-center gap-2 ml-5">
-            <img src={logo.src} className="max-h-8" alt={logo.alt} />
+            <img src={logo.src} className="max-h-10" alt={logo.alt} />
             <span className="text-lg font-semibold tracking-tighter">
               {logo.title}
             </span>

@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import VisitorLog from "./pages/VisitorLog"; // Updated import
+import Visit from "./pages/Visit"; // Updated import
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/visit" element={<Visit />} />
         <Route path="/visitor-log" element={<VisitorLog />} /> {/* Updated route */}
       </Routes>
       <Footer7 />

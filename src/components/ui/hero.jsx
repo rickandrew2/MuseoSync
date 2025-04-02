@@ -32,7 +32,13 @@ const Hero = () => {
             </Button>
           </div>
         </div>
-        <div className="w-full lg:w-[1000px] lg:h-[calc(100vh-4rem)] bg-gray-400 rounded-xl" />
+        <div className="w-full lg:w-[1000px] min-h-[calc(100vh-4rem)] rounded-xl overflow-hidden">
+          <img
+            src="https://wallpaperaccess.com/full/2339422.jpg"
+            alt="Museum"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { Contact2 } from "@/components/ui/contact2";
 import { Logos3 } from "@/components/ui/Logos3";
+import { ScheduleForm } from "@/components/ui/ScheduleForm";
 
 const Contact = () => {
   return (

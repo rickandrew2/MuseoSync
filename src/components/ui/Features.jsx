@@ -88,35 +88,27 @@ const OVM = () => {
             Our Values and Principles
           </h2>
           <div>
-            <h3 className="mb-2 text-xl font-medium">Team Spirit</h3>
+            <h3 className="mb-2 text-xl font-medium">Preservation</h3>
             <p className="text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit
-              architecto atque consequuntur perferendis ratione dolorem vitae,
-              doloribus facere.
+              We are committed to safeguarding historical artifacts and cultural heritage to ensure they endure for future generations.
             </p>
           </div>
           <div>
-            <h3 className="mb-2 text-xl font-medium">Innovation</h3>
+            <h3 className="mb-2 text-xl font-medium">Education</h3>
             <p className="text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit
-              architecto atque consequuntur perferendis ratione dolorem vitae,
-              doloribus facere.
+              We strive to educate visitors of all ages through engaging exhibits, workshops, and guided tours that bring history to life.
             </p>
           </div>
           <div>
-            <h3 className="mb-2 text-xl font-medium">Quality</h3>
+            <h3 className="mb-2 text-xl font-medium">Community Engagement</h3>
             <p className="text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit
-              architecto atque consequuntur perferendis ratione dolorem vitae,
-              doloribus facere.
+              We believe in fostering strong connections with our community by organizing events and programs that celebrate local history and culture.
             </p>
           </div>
           <div>
             <h3 className="mb-2 text-xl font-medium">Integrity</h3>
             <p className="text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit
-              architecto atque consequuntur perferendis ratione dolorem vitae,
-              doloribus facere.
+              Our work is guided by honesty, transparency, and a deep respect for the stories and artifacts we curate.
             </p>
           </div>
         </div>
@@ -124,6 +116,5 @@ const OVM = () => {
     </section>
   );
 };
-
 
 export { Features06Page, OVM };

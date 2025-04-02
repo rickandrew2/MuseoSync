@@ -62,7 +62,7 @@ const Footer7 = ({
                   </a>
                 </li>
                 <li className="font-medium hover:text-primary">
-                  <a href="#">
+                  <a href="https://www.facebook.com/MuseoSanJoseDMT">
                     <FaFacebook className="size-6" />
                   </a>
                 </li>

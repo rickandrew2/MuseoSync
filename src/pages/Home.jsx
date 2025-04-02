@@ -6,21 +6,30 @@ import { MuseumCTA } from "@/components/ui/museumcta";
 
 const Home = () => {
   return (
-    <>
-    
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <Hero />
-      <div className="w-full max-w-5xl mx-auto mt-8">
-        <Features06Page />
+    <main className="min-h-screen bg-gray-100">
+      {/* Hero Section */}
+      <section className="w-full flex justify-center">
+        <Hero />
+      </section>
+
+      {/* Content Container */}
+      <div className="w-full max-w-6xl mx-auto px-6 space-y-16">
+        {/* Features Section */}
+        <section>
+          <Features06Page />
+        </section>
+
+        {/* Gallery Section */}
+        <section>
+          <Gallery4 />
+        </section>
+
+        {/* Call-To-Action Section */}
+        <section>
+          <MuseumCTA />
+        </section>
       </div>
-      <div className="w-full max-w-5xl mx-auto mt-8">
-        <Gallery4 />
-      </div>
-      <div className="w-full max-w-5xl mx-auto mt-8">
-        <MuseumCTA />
-      </div>
-    </div>
-    </>
+    </main>
   );
 };
 
