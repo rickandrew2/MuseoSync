@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
-dotenv.config({ path: "./config.env" });
+dotenv.config();
 
 const app = express();
 const port = 5000;

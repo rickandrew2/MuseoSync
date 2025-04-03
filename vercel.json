@@ -1,18 +1,19 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "server/server.js",
+      "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/artifacts",
-      "dest": "/server/server.js"
+      "dest": "/server.js"
     },
     {
-      "src": "/submit-logbook",
-      "dest": "/server/server.js"
+      "src": "/api/submit-logbook",
+      "dest": "/server.js"
     }
   ]
 }
