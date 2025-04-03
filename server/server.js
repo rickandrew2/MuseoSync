@@ -8,13 +8,13 @@ import rateLimit from "express-rate-limit";
 dotenv.config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(helmet()); // Security headers
-app.use(express.json()); // Parse JSON
+app.use(helmet()); 
+app.use(express.json()); 
 app.use(cors({
-  origin: "http://localhost:3000", // Adjust this if your frontend runs on a different port
+  origin: ['http://localhost:3000', 'https://museosync.vercel.app'],
   methods: ["GET", "POST"],
   credentials: true,
 }));
@@ -54,18 +54,22 @@ connectDB();
 // Route to get all artifacts
 app.get("/api/artifacts", async (req, res) => {
   try {
+    console.log("Attempting to connect to MongoDB...");
     const db = client.db("MuseoSync");
+    console.log("Connected to database");
     const collection = db.collection("artifacts_collection");
+    console.log("Accessing collection");
     const artifacts = await collection.find().toArray();
+    console.log("Found artifacts:", artifacts.length);
     res.status(200).json(artifacts);
   } catch (error) {
-    console.error("Error fetching artifacts:", error);
-    res.status(500).json({ message: "Failed to fetch artifacts" });
+    console.error("Detailed error:", error);
+    res.status(500).json({ message: "Failed to fetch artifacts", error: error.message });
   }
 });
 
 // Route to submit logbook data
-app.post("/submit-logbook", async (req, res) => {
+app.post("/api/submit-logbook", async (req, res) => {
   const { name, gender, address } = req.body;
 
   if (!name || !gender || !address) {

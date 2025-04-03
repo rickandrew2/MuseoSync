@@ -27,7 +27,7 @@ const VisitorLog = () => {
     const formData = { name, gender, address };
 
     try {
-      const response = await fetch("http://localhost:5000/submit-visitorlog", {
+      const response = await fetch("/api/submit-visitorlog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -2,18 +2,23 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    },
+    {
+      "src": "server/server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/artifacts",
-      "dest": "/server.js"
+      "src": "/api/(.*)",
+      "dest": "/server/server.js"
     },
     {
-      "src": "/api/submit-logbook",
-      "dest": "/server.js"
+      "src": "/(.*)",
+      "dest": "/client/dist/$1"
     }
   ]
 }
