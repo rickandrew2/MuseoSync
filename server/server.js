@@ -14,7 +14,10 @@ const port = process.env.PORT || 5000;
 app.use(helmet()); 
 app.use(express.json()); 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://museosync.vercel.app'],
+  origin: [
+    'http://localhost:3000', 
+    'https://museosync.vercel.app'
+  ],
   methods: ["GET", "POST"],
   credentials: true,
 }));
