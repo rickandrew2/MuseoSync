@@ -1,11 +1,18 @@
 import express from "express";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config({ path: join(__dirname, '.env') });
+console.log("Current directory:", __dirname);
+console.log("Environment variables loaded:", process.env.ATLAS_URI ? "ATLAS_URI exists" : "ATLAS_URI is missing");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -15,7 +22,8 @@ app.use(helmet());
 app.use(express.json()); 
 app.use(cors({
   origin: [
-    'http://localhost:3000', 
+    'http://localhost:3000',
+    'http://localhost:5173',
     'https://museosync.vercel.app'
   ],
   methods: ["GET", "POST"],
@@ -62,12 +70,39 @@ app.get("/api/artifacts", async (req, res) => {
     console.log("Connected to database");
     const collection = db.collection("artifacts_collection");
     console.log("Accessing collection");
-    const artifacts = await collection.find().toArray();
+    const artifacts = await collection.find({}).toArray();
     console.log("Found artifacts:", artifacts.length);
     res.status(200).json(artifacts);
   } catch (error) {
     console.error("Detailed error:", error);
     res.status(500).json({ message: "Failed to fetch artifacts", error: error.message });
+  }
+});
+
+// Route to get a single artifact by ID
+app.get("/api/artifacts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("Fetching artifact with ID:", id);
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid artifact ID format" });
+    }
+
+    const db = client.db("MuseoSync");
+    const collection = db.collection("artifacts_collection");
+    
+    const artifact = await collection.findOne({ _id: new ObjectId(id) });
+    
+    if (!artifact) {
+      return res.status(404).json({ message: "Artifact not found" });
+    }
+
+    console.log("Found artifact:", artifact.artifact_name);
+    res.status(200).json(artifact);
+  } catch (error) {
+    console.error("Error fetching artifact:", error);
+    res.status(500).json({ message: "Failed to fetch artifact", error: error.message });
   }
 });
 
