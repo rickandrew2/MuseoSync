@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { MapPin } from "lucide-react";
+import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import axios from "axios";
 
 const FeaturedCollections = () => {
@@ -9,6 +9,8 @@ const FeaturedCollections = () => {
   const [artifacts, setArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const artifactsPerPage = 6;
 
   useEffect(() => {
     const fetchArtifacts = async () => {
@@ -29,6 +31,17 @@ const FeaturedCollections = () => {
 
     fetchArtifacts();
   }, []);
+
+  // Calculate pagination values
+  const indexOfLastArtifact = currentPage * artifactsPerPage;
+  const indexOfFirstArtifact = indexOfLastArtifact - artifactsPerPage;
+  const currentArtifacts = artifacts.slice(indexOfFirstArtifact, indexOfLastArtifact);
+  const totalPages = Math.ceil(artifacts.length / artifactsPerPage);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (loading) {
     return (
@@ -71,12 +84,12 @@ const FeaturedCollections = () => {
             Explore our handpicked selection of extraordinary artifacts that showcase the rich cultural heritage of our region.
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            {artifacts.length} artifacts available
+            Showing {indexOfFirstArtifact + 1}-{Math.min(indexOfLastArtifact, artifacts.length)} of {artifacts.length} artifacts
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {artifacts.map((artifact, index) => (
+          {currentArtifacts.map((artifact, index) => (
             <motion.div
               key={artifact._id}
               initial={{ opacity: 0, y: 20 }}
@@ -141,6 +154,43 @@ const FeaturedCollections = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-12 flex justify-center items-center gap-2">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="p-2 rounded-lg bg-background border border-border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            
+            <div className="flex gap-2">
+              {[...Array(totalPages)].map((_, idx) => (
+                <button
+                  key={idx + 1}
+                  onClick={() => paginate(idx + 1)}
+                  className={`px-4 py-2 rounded-lg ${
+                    currentPage === idx + 1
+                      ? 'bg-primary text-white'
+                      : 'bg-background border border-border hover:bg-accent'
+                  }`}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="p-2 rounded-lg bg-background border border-border hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

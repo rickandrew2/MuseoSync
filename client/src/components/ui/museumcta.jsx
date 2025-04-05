@@ -56,9 +56,9 @@ export function MuseumCTA() {
               <div>
                 <h3 className="text-foreground font-medium mb-2">Admission Fees</h3>
                 <div className="text-muted-foreground space-y-1">
-                  <p>Adults: ₱100</p>
-                  <p>Students & Seniors: ₱50</p>
-                  <p>Children (under 12): Free</p>
+                  <p>Regular: ₱10</p>
+                  <p>Students & Seniors: ₱7</p>
+                  <p>Children (under 12) and PWD: Free</p>
                 </div>
               </div>
             </div>
@@ -81,13 +81,13 @@ export function MuseumCTA() {
             <Button 
               size="lg"
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 group"
-              onClick={() => window.location.href = '/tickets'}
+              onClick={() => window.location.href = '/Visit'}
             >
               <div className="relative">
                 <div className="absolute inset-0 bg-primary-foreground rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
                 <Ticket className="mr-2 h-5 w-5 relative" />
               </div>
-              Book Tickets
+              Book your Visit
             </Button>
             <Button 
               variant="outline"

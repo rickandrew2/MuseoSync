@@ -2,6 +2,7 @@
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css"; // Import AOS styles
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ const Gallery4 = ({
   title = "Featured Exhibitions",
   description = "Immerse yourself in our curated collection of extraordinary artifacts and exhibitions that showcase the rich cultural heritage of our region.",
 }) => {
+  const navigate = useNavigate();
   const [carouselApi, setCarouselApi] = useState(null);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -54,6 +56,11 @@ const Gallery4 = ({
     fetchArtifacts();
   }, []); // Empty dependency array means it runs only once when mounted
 
+  const handleArtifactClick = (artifactId) => {
+    navigate(`/artifact/${artifactId}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <section className="py-24">
       <div className="container">
@@ -62,10 +69,10 @@ const Gallery4 = ({
           data-aos="fade-up"
         >
           <div className="flex flex-col gap-4">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium text-[#F5E6D3]">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium text-[#000000]">
               {title}
             </h2>
-            <p className="max-w-lg text-[#E6D5C7] text-lg">
+            <p className="max-w-lg text-gray-600 text-lg">
               {description}
             </p>
           </div>
@@ -73,7 +80,7 @@ const Gallery4 = ({
             <Button
               size="icon"
               variant="outline"
-              className="border-[#CD7F32] text-[#CD7F32] hover:bg-[#CD7F32]/10 hover:text-[#F5E6D3]"
+              className="border-[#000000] text-[#000000] hover:bg-[#CD7F32]/10 hover:text-[#F5E6D3]"
               onClick={() => carouselApi?.scrollPrev()}
               disabled={!canScrollPrev}
             >
@@ -82,7 +89,7 @@ const Gallery4 = ({
             <Button
               size="icon"
               variant="outline"
-              className="border-[#CD7F32] text-[#CD7F32] hover:bg-[#CD7F32]/10 hover:text-[#F5E6D3]"
+              className="border-[#000000] text-[#000000] hover:bg-[#CD7F32]/10 hover:text-[#F5E6D3]"
               onClick={() => carouselApi?.scrollNext()}
               disabled={!canScrollNext}
             >
@@ -108,28 +115,37 @@ const Gallery4 = ({
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
               >
-                <a href={item.href} className="group relative block">
-                  <div className="relative h-full min-h-[27rem] max-w-full overflow-hidden rounded-lg">
+                <div className="group relative block">
+                  <div 
+                    className="relative h-full min-h-[27rem] max-w-full overflow-hidden rounded-xl shadow-lg transition-all duration-300 group-hover:shadow-xl cursor-pointer"
+                    onClick={() => handleArtifactClick(item._id)}
+                  >
                     <img
                       src={item.image}
                       alt={item.title}
                       className="absolute h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1A0F0D]/60 to-[#1A0F0D] opacity-80" />
-                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-start p-6">
-                      <div className="mb-2 text-xl font-serif font-medium text-[#F5E6D3]">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/90 opacity-90 transition-opacity duration-300 group-hover:opacity-75" />
+                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-start p-6 transition-transform duration-300 group-hover:translate-y-[-8px]">
+                      <div className="mb-3 text-xl font-serif font-medium text-white drop-shadow-lg">
                         {item.title}
                       </div>
-                      <div className="mb-6 line-clamp-2 text-[#E6D5C7]">
+                      <div className="mb-4 line-clamp-2 text-gray-200 font-medium drop-shadow">
                         {item.description}
                       </div>
-                      <div className="flex items-center text-sm text-[#CD7F32] group-hover:text-[#F5E6D3] transition-colors duration-300">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleArtifactClick(item._id);
+                        }}
+                        className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm text-white font-medium group-hover:bg-white/20 transition-all duration-300"
+                      >
                         Read more 
                         <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
-                      </div>
+                      </button>
                     </div>
                   </div>
-                </a>
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -139,7 +155,7 @@ const Gallery4 = ({
             <button
               key={index}
               className={`h-2 w-2 rounded-full transition-colors ${
-                currentSlide === index ? "bg-[#CD7F32]" : "bg-[#CD7F32]/20"
+                currentSlide === index ? "bg-gray-600" : "bg-[#CD7F32]/20"
               }`}
               onClick={() => carouselApi?.scrollTo(index)}
               aria-label={`Go to slide ${index + 1}`}

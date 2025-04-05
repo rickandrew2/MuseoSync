@@ -54,13 +54,13 @@ export const VisitorLogForm = () => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-center space-x-3 mb-8">
-        <BookOpen className="w-8 h-8 text-[#FFD700]" />
-        <h2 className="text-3xl font-serif font-bold text-[#FFD700]">
+        <BookOpen className="w-8 h-8 text-primary" />
+        <h2 className="text-3xl font-serif font-medium text-foreground">
           Sign Our Guestbook
         </h2>
       </div>
       
-      <p className="text-center text-[#D4AF37] mb-8 font-medium">
+      <p className="text-center text-muted-foreground mb-8">
         Leave your mark in our museum's history
       </p>
 
@@ -69,16 +69,15 @@ export const VisitorLogForm = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="group"
         >
-          <Label htmlFor="name" className="text-[#FFD700] font-medium mb-2 block">Name</Label>
+          <Label htmlFor="name" className="text-foreground font-medium mb-2 block">Name</Label>
           <Input
             id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter your name"
-            className="w-full bg-[#1A0F0D] border-2 border-[#8B4513] text-[#D4AF37] placeholder:text-[#8B4513] focus:border-[#FFD700] focus:ring-[#FFD700] transition-colors"
+            className="w-full bg-background border border-input text-foreground placeholder:text-muted-foreground focus:border-primary"
             required
           />
         </motion.div>
@@ -87,16 +86,15 @@ export const VisitorLogForm = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="group"
         >
-          <Label htmlFor="gender" className="text-[#FFD700] font-medium mb-2 block">Gender</Label>
+          <Label htmlFor="gender" className="text-foreground font-medium mb-2 block">Gender</Label>
           <Select value={gender} onValueChange={setGender} required>
-            <SelectTrigger className="w-full bg-[#1A0F0D] border-2 border-[#8B4513] text-[#D4AF37] focus:border-[#FFD700] focus:ring-[#FFD700] transition-colors">
+            <SelectTrigger className="w-full bg-background border border-input text-foreground">
               <SelectValue placeholder="Select Gender" />
             </SelectTrigger>
-            <SelectContent className="bg-[#2C1810] border-2 border-[#8B4513]">
-              <SelectItem value="Male" className="text-[#D4AF37] focus:bg-[#3D2419] focus:text-[#FFD700]">Male</SelectItem>
-              <SelectItem value="Female" className="text-[#D4AF37] focus:bg-[#3D2419] focus:text-[#FFD700]">Female</SelectItem>
+            <SelectContent>
+              <SelectItem value="Male">Male</SelectItem>
+              <SelectItem value="Female">Female</SelectItem>
             </SelectContent>
           </Select>
         </motion.div>
@@ -105,16 +103,15 @@ export const VisitorLogForm = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
-          className="group"
         >
-          <Label htmlFor="address" className="text-[#FFD700] font-medium mb-2 block">Address</Label>
+          <Label htmlFor="address" className="text-foreground font-medium mb-2 block">Address</Label>
           <Input
             id="address"
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Enter your address"
-            className="w-full bg-[#1A0F0D] border-2 border-[#8B4513] text-[#D4AF37] placeholder:text-[#8B4513] focus:border-[#FFD700] focus:ring-[#FFD700] transition-colors"
+            className="w-full bg-background border border-input text-foreground placeholder:text-muted-foreground focus:border-primary"
             required
           />
         </motion.div>
@@ -139,9 +136,9 @@ export const VisitorLogForm = () => {
         >
           <Button 
             type="submit" 
-            className="w-full bg-[#8B4513] hover:bg-[#6B3410] text-[#FFD700] border-2 border-[#FFD700]/20 shadow-lg shadow-[#000]/20 transition-all duration-300 hover:shadow-xl hover:shadow-[#000]/30 group"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300"
           >
-            <PenLine className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+            <PenLine className="w-5 h-5 mr-2" />
             Sign Guestbook
           </Button>
         </motion.div>
