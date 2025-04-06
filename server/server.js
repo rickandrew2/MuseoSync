@@ -18,9 +18,12 @@ console.log("Environment variables loaded:", process.env.ATLAS_URI ? "ATLAS_URI 
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Add base path handling
+const BASE_PATH = process.env.VERCEL_ENV === 'production' ? '' : '';
+
 // Configure CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // Updated to match your Vite dev server
+  origin: ['http://localhost:5173', 'https://museo-sync.vercel.app', 'https://museo-sync-client.vercel.app'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -34,7 +37,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5173"],
+      connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5173", "https://museo-sync.vercel.app", "https://museo-sync-client.vercel.app"],
       fontSrc: ["'self'", "https:", "data:"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
@@ -81,7 +84,7 @@ async function connectDB() {
 connectDB();
 
 // Route to get all artifacts
-app.get("/api/artifacts", async (req, res) => {
+app.get(BASE_PATH + "/api/artifacts", async (req, res) => {
   try {
     console.log("Attempting to connect to MongoDB...");
     const db = client.db("MuseoSync");
@@ -98,7 +101,7 @@ app.get("/api/artifacts", async (req, res) => {
 });
 
 // Route to get available dates
-app.get("/api/available-dates", async (req, res) => {
+app.get(BASE_PATH + "/api/available-dates", async (req, res) => {
   try {
     const db = client.db("MuseoSync");
     const collection = db.collection("available_dates");
@@ -117,7 +120,7 @@ app.get("/api/available-dates", async (req, res) => {
 });
 
 // Route to get a single artifact by ID
-app.get("/api/artifacts/:id", async (req, res) => {
+app.get(BASE_PATH + "/api/artifacts/:id", async (req, res) => {
   try {
     const { id } = req.params;
     console.log("Fetching artifact with ID:", id);
@@ -144,7 +147,7 @@ app.get("/api/artifacts/:id", async (req, res) => {
 });
 
 // Route to submit logbook data
-app.post("/api/submit-logbook", async (req, res) => {
+app.post(BASE_PATH + "/api/submit-logbook", async (req, res) => {
   const { name, gender, address } = req.body;
 
   if (!name || !gender || !address) {
@@ -169,7 +172,7 @@ app.post("/api/submit-logbook", async (req, res) => {
 });
 
 // Route to create a new booking
-app.post("/api/bookings", async (req, res) => {
+app.post(BASE_PATH + "/api/bookings", async (req, res) => {
   try {
     const { visitor_name, email, selected_date, selected_time, recaptchaToken } = req.body;
 
