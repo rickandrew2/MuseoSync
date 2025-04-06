@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
-import axiosInstance from "@/lib/axios";
+import axios from "axios";
 
 const FeaturedCollections = () => {
   const navigate = useNavigate();
@@ -16,7 +16,9 @@ const FeaturedCollections = () => {
     const fetchArtifacts = async () => {
       try {
         console.log("Fetching artifacts...");
-        const response = await axiosInstance.get('/artifacts');
+        const response = await axios.get('http://localhost:5000/api/artifacts', {
+          withCredentials: true
+        });
         console.log("Received artifacts:", response.data);
         setArtifacts(response.data);
         setLoading(false);

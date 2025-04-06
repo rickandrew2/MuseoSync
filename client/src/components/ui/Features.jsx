@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axiosInstance from "@/lib/axios";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -20,7 +20,9 @@ const Features06Page = () => {
     // Fetch data from API
     const fetchArtifacts = async () => {
       try {
-        const response = await axiosInstance.get('/artifacts');
+        const response = await axios.get('http://localhost:5000/api/artifacts', {
+          withCredentials: true
+        });
         // Shuffle the array and take only 5 random items
         const randomArtifacts = response.data
           .sort(() => Math.random() - 0.5)
