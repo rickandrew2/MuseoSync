@@ -98,6 +98,7 @@ const renderMobileMenuItem = (item) => {
 
   return (
     <Link 
+      key={item.title}
       to={item.url} 
       className={`group py-3 px-4 text-md font-medium transition-all duration-300 rounded-xl flex items-center justify-between
         ${isActive 

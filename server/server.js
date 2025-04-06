@@ -6,6 +6,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import fetch from 'node-fetch';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,19 +18,36 @@ console.log("Environment variables loaded:", process.env.ATLAS_URI ? "ATLAS_URI 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
-app.use(helmet()); 
-app.use(express.json()); 
+// Configure CORS
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'https://museosync.vercel.app'
-  ],
-  methods: ["GET", "POST"],
+  origin: 'http://localhost:5173', // Updated to match your Vite dev server
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Configure Helmet with custom CSP
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5173"],
+      fontSrc: ["'self'", "https:", "data:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'self'"],
+      wasm: ["'self'", "'unsafe-eval'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// Other Middleware
+app.use(express.json());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -76,6 +94,25 @@ app.get("/api/artifacts", async (req, res) => {
   } catch (error) {
     console.error("Detailed error:", error);
     res.status(500).json({ message: "Failed to fetch artifacts", error: error.message });
+  }
+});
+
+// Route to get available dates
+app.get("/api/available-dates", async (req, res) => {
+  try {
+    const db = client.db("MuseoSync");
+    const collection = db.collection("available_dates");
+    const availableDates = await collection.find({}).toArray();
+    
+    if (!availableDates) {
+      return res.status(404).json({ message: "No available dates found" });
+    }
+
+    console.log("Fetched available dates:", availableDates.length);
+    res.status(200).json(availableDates);
+  } catch (error) {
+    console.error("Error fetching available dates:", error);
+    res.status(500).json({ message: "Failed to fetch available dates", error: error.message });
   }
 });
 
@@ -131,10 +168,126 @@ app.post("/api/submit-logbook", async (req, res) => {
   }
 });
 
-// Global error handler
+// Route to create a new booking
+app.post("/api/bookings", async (req, res) => {
+  try {
+    const { visitor_name, email, selected_date, selected_time, recaptchaToken } = req.body;
+
+    if (!visitor_name || !email || !selected_date || !selected_time || !recaptchaToken) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Format the date to YYYY-MM-DD to match MongoDB format
+    const formattedSelectedDate = new Date(selected_date).toISOString().split('T')[0];
+    
+    console.log('Booking request details:', {
+      received_date: selected_date,
+      formatted_date: formattedSelectedDate,
+      time: selected_time
+    });
+
+    // Verify reCAPTCHA token
+    console.log("Attempting reCAPTCHA verification with token:", recaptchaToken.substring(0, 20) + "...");
+    
+    const recaptchaVerification = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
+    });
+
+    const recaptchaData = await recaptchaVerification.json();
+    console.log("reCAPTCHA verification response:", recaptchaData);
+
+    if (!recaptchaData.success) {
+      console.error("reCAPTCHA verification failed:", recaptchaData["error-codes"] || "No error codes provided");
+      return res.status(400).json({ 
+        message: "reCAPTCHA verification failed",
+        details: recaptchaData["error-codes"] || []
+      });
+    }
+
+    const db = client.db("MuseoSync");
+    
+    // Check if the selected time slot is still available
+    const availableDatesCollection = db.collection("available_dates");
+    
+    // Log the query we're about to make
+    console.log('Searching for date in MongoDB:', {
+      query_date: formattedSelectedDate
+    });
+    
+    const dateDoc = await availableDatesCollection.findOne({
+      date: formattedSelectedDate
+    });
+    
+    console.log('MongoDB query result:', {
+      found: !!dateDoc,
+      dateDoc: dateDoc ? {
+        date: dateDoc.date,
+        timeSlots: dateDoc.timeSlots.map(slot => ({
+          time: slot.time,
+          isAvailable: slot.isAvailable,
+          currentBookings: slot.currentBookings
+        }))
+      } : null
+    });
+
+    if (!dateDoc) {
+      return res.status(400).json({ message: "Selected date is not available" });
+    }
+
+    // Find the specific time slot
+    const timeSlot = dateDoc.timeSlots.find(slot => slot.time === selected_time);
+    
+    if (!timeSlot) {
+      return res.status(400).json({ message: "Selected time slot not found" });
+    }
+
+    if (!timeSlot.isAvailable || timeSlot.currentBookings >= timeSlot.maxCapacity) {
+      return res.status(400).json({ message: "Selected time slot is not available" });
+    }
+
+    // Create the booking
+    const bookingsCollection = db.collection("bookings");
+    const booking = {
+      visitor_name,
+      email,
+      selected_date: formattedSelectedDate,
+      selected_time,
+      status: "Pending",
+      timestamp: new Date().toISOString(),
+      reference_code: "MMDT" + Math.random().toString(36).substr(2, 6).toUpperCase()
+    };
+
+    const result = await bookingsCollection.insertOne(booking);
+
+    // Update the available_dates collection to increment currentBookings
+    await availableDatesCollection.updateOne(
+      {
+        date: formattedSelectedDate,
+        "timeSlots.time": selected_time
+      },
+      {
+        $inc: { "timeSlots.$.currentBookings": 1 }
+      }
+    );
+
+    res.status(201).json({ 
+      message: "Booking created successfully", 
+      booking: { ...booking, _id: result.insertedId } 
+    });
+  } catch (error) {
+    console.error("Error creating booking:", error);
+    res.status(500).json({ message: "Failed to create booking", error: error.message });
+  }
+});
+
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Internal Server Error" });
+  console.error('Error:', err);
+  res.status(500).json({ message: "Internal Server Error", error: err.message });
 });
 
 // Start the server

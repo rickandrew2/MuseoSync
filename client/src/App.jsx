@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { Navbar1 } from "./components/ui/navbar1";
 import { Footer7 } from "./components/ui/footer7";
 import { Hero } from "@/components/ui/hero";
+import { Toaster } from 'sonner';
 
 // Import the pages for routing
 import Home from "./pages/Home";
@@ -16,6 +17,7 @@ import ArtifactDetail from "./pages/ArtifactDetail";
 const App = () => {
   return (
     <>
+      <Toaster />
       <Navbar1 /> {/* Your Navbar, if you still want it */}
       <Routes>
         <Route path="/" element={<Home />} /> 
