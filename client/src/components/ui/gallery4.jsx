@@ -41,7 +41,7 @@ const Gallery4 = ({
   useEffect(() => {
     const fetchArtifacts = async () => {
       try {
-        const response = await fetch("/api/artifacts");
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/artifacts`);
         const data = await response.json();
         // Shuffle the array and take only 5 random items
         const randomArtifacts = data
