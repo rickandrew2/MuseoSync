@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css"; // Import AOS styles
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
@@ -42,9 +42,7 @@ const Gallery4 = ({
   useEffect(() => {
     const fetchArtifacts = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/artifacts`, {
-          withCredentials: true
-        });
+        const response = await axiosInstance.get('/artifacts');
         // Shuffle the array and take only 5 random items
         const randomArtifacts = response.data
           .sort(() => Math.random() - 0.5)

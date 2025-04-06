@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axios from "axios";
-
+import axiosInstance from "@/lib/axios";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
 
 const Features06Page = () => {
   const [artifacts, setArtifacts] = useState([]);
@@ -22,9 +20,7 @@ const Features06Page = () => {
     // Fetch data from API
     const fetchArtifacts = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/artifacts`, {
-          withCredentials: true
-        });
+        const response = await axiosInstance.get('/artifacts');
         // Shuffle the array and take only 5 random items
         const randomArtifacts = response.data
           .sort(() => Math.random() - 0.5)
