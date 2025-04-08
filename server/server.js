@@ -1,9 +1,9 @@
 import express from "express";
+import { corsMiddleware, helmetMiddleware, rateLimiter } from "./middleware/security.js";
+import { connectDB } from "./config/db.js";
+import apiRoutes from "./routes/index.js";
 import { MongoClient, ObjectId } from "mongodb";
-import cors from "cors";
 import dotenv from "dotenv";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fetch from 'node-fetch';
@@ -41,8 +41,6 @@ transporter.verify(function (error, success) {
     console.log('Email server is ready to send messages');
   }
 });
-
-
 
 // Email templates
 const createInquiryEmailTemplate = (name, subject) => `
@@ -163,67 +161,17 @@ const createBookingEmailTemplate = (name, date, time, referenceCode) => `
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Remove BASE_PATH and update CORS
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://museo-sync.vercel.app', 'https://museo-sync-client.vercel.app'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Configure Helmet with custom CSP
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5173", "https://museo-sync.vercel.app", "https://museo-sync-client.vercel.app"],
-      fontSrc: ["'self'", "https:", "data:"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'self'"],
-      wasm: ["'self'", "'unsafe-eval'"]
-    }
-  },
-  crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
-
-// Other Middleware
+// Apply middleware
+app.use(corsMiddleware);
+app.use(helmetMiddleware);
 app.use(express.json());
+app.use(rateLimiter);
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: "Too many requests, please try again later.",
-});
-app.use(limiter);
-
-// MongoDB connection setup
-const Db = process.env.ATLAS_URI;
-if (!Db) {
-  console.error("MongoDB URI is not defined in environment variables.");
-  process.exit(1);
-}
-
-const client = new MongoClient(Db, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverApi: { version: "1", strict: true, deprecationErrors: true },
-});
-
-async function connectDB() {
-  try {
-    await client.connect();
-    console.log("MongoDB connected successfully");
-  } catch (error) {
-    console.error("MongoDB connection failed:", error);
-    process.exit(1);
-  }
-}
+// Connect to MongoDB
 connectDB();
+
+// API routes
+app.use("/api", apiRoutes);
 
 // Route to get all artifacts
 app.get("/api/artifacts", async (req, res) => {
