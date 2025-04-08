@@ -56,6 +56,28 @@ const ScheduleForm = () => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState(null);
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  const validateName = (name) => {
+    const regex = /^[a-zA-Z\s]+$/;
+    if (!regex.test(name)) {
+      setNameError("Name should only contain letters and spaces");
+      return false;
+    }
+    setNameError("");
+    return true;
+  };
+
+  const validateEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    if (!regex.test(email)) {
+      setEmailError("Email must be a valid Gmail address");
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
 
   // Fetch available dates when component mounts
   useEffect(() => {
@@ -127,6 +149,13 @@ const ScheduleForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    if (name === 'name') {
+      validateName(value);
+    } else if (name === 'email') {
+      validateEmail(value);
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -365,6 +394,7 @@ const ScheduleForm = () => {
                 placeholder="Enter your full name"
                 required
               />
+              {nameError && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
             </div>
 
             <div className="space-y-2">
@@ -379,10 +409,11 @@ const ScheduleForm = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-background border border-primary/10 focus:border-primary/30 outline-none rounded-lg text-foreground placeholder:text-muted-foreground/50"
-                placeholder="Enter your email"
+                className="w-full px-4 py-3 bg-background border border-primary/10 focus:border-primary/30 outline-none rounded-none rounded-lg text-foreground placeholder:text-muted-foreground/50"
+                placeholder="Enter your Gmail address"
                 required
               />
+              {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
             </div>
 
             <div className="space-y-2">

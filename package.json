@@ -21,6 +21,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "nodemailer": "^6.10.0",
     "sonner": "^2.0.3"
   }
 }
